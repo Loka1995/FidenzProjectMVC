@@ -15,7 +15,18 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkSto
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
+
+//--------------------------------------------
+app.UseSwagger();
+
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "APIController");
+});
+//--------------------------------------------
 
 using (var scope = app.Services.CreateScope())
 {
