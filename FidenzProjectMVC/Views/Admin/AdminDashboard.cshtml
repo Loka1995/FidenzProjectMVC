@@ -1,0 +1,57 @@
+﻿@model List<User>
+
+<h1>Admin Dashboard</h1>
+
+<table class="table table-hover table-bordered w-auto text-nowrap">
+    <thead class="thead-dark">
+        <tr>
+            <th>No</th>
+            <th>Id</th>
+            <th>Index</th>
+            <th>Age</th>
+            <th>EyeColor</th>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>Company</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Number</th>
+            <th>Street</th>
+            <th>City</th>
+            <th>State</th>
+            <th>ZipCode</th>
+            <th>About</th>
+            <th>Registered</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
+            <th>Tags</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@(Model.IndexOf(user) + 1)</td>
+                <td>@user.Id</td>
+                <td>@user.Index</td>
+                <td>@user.Age</td>
+                <td>@user.EyeColor</td>
+                <td>@user.Name</td>
+                <td>@user.Gender</td>
+                <td>@user.Company</td>
+                <td>@user.Email</td>
+                <td>@user.Phone</td>
+                <td>@user.Address.Number</td>
+                <td>@user.Address.Street</td>
+                <td>@user.Address.City</td>
+                <td>@user.Address.State</td>
+                <td>@user.Address.ZipCode</td>
+                <td>@user.About</td>
+                <td>@user.Registered</td>
+                <td>@user.Latitude</td>
+                <td>@user.Longitude</td>
+                <td>@string.Join(", ", user.Tags)</td>
+            </tr>
+        }
+    </tbody>
+</table>

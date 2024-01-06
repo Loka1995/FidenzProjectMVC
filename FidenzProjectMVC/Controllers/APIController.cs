@@ -1,4 +1,5 @@
-﻿using FidenzProjectMVC.Models;
+﻿using FidenzProjectMVC.Common.Interfaces;
+using FidenzProjectMVC.Models;
 using FidenzProjectMVC.Models.Dto;
 using FidenzProjectMVC.Repository;
 using Microsoft.AspNetCore.Http;
@@ -10,11 +11,11 @@ namespace FidenzProjectMVC.Controllers
     [ApiController]
     public class APIController : ControllerBase
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public APIController(IUserRepository userRepository)
+        public APIController(IUnitOfWork unitOfWork)
         {
-            _userRepository = userRepository;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpPut("{id}", Name = "UpdateUser")]
@@ -27,13 +28,13 @@ namespace FidenzProjectMVC.Controllers
                 return BadRequest();
             }
 
-            var user = _userRepository.GetUserByIdAsync(id).Result;
+            var user = _unitOfWork.User.GetUserByIdAsync(id).Result;
 
             user.Name = editUserDto.Name == null || editUserDto.Name == "" || editUserDto.Name == "string" ? user.Name : editUserDto.Name;
             user.Email = editUserDto.Email == null || editUserDto.Email == "" || editUserDto.Email == "string" ? user.Email : editUserDto.Email;
             user.Phone = editUserDto.Phone == null || editUserDto.Phone == "" || editUserDto.Phone == "string" ? user.Phone : editUserDto.Phone;
 
-            _userRepository.UpdateUser(user);
+            _unitOfWork.User.UpdateUser(user);
             return NoContent();
         }
 
@@ -46,7 +47,7 @@ namespace FidenzProjectMVC.Controllers
                 return BadRequest();
             }
 
-            var distance = await _userRepository.CalculateDistanceAsync(id, Latitude, Longitude);
+            var distance = await _unitOfWork.User.CalculateDistanceAsync(id, Latitude, Longitude);
             return Ok(distance + "Km");
         }
 
@@ -54,7 +55,7 @@ namespace FidenzProjectMVC.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<IEnumerable<User>>> Search(string word)
         {
-            var result = await _userRepository.SearchUsersAsync(word);
+            var result = await _unitOfWork.User.SearchUsersAsync(word);
             if (result.Any())
             {
                 return Ok(result);
@@ -67,7 +68,7 @@ namespace FidenzProjectMVC.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<UsersByZipCodeDto>>> GetUsersGroupedByZipCode()
         {
-            var result = await _userRepository.GetUsersGroupedByZipCodeAsync();
+            var result = await _unitOfWork.User.GetUsersGroupedByZipCodeAsync();
             if (result.Any())
             {
                 return Ok(result);
