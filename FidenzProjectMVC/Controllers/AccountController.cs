@@ -11,14 +11,17 @@ namespace FidenzProjectMVC.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IJwtTokenGenerator _jwtTokenGenerator;
 
-        public AccountController(IUnitOfWork unitOfWork, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, RoleManager<IdentityRole> roleManager)
+        public AccountController(IUnitOfWork unitOfWork, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, RoleManager<IdentityRole> roleManager, IJwtTokenGenerator jwtTokenGenerator)
         {
             _unitOfWork = unitOfWork;
-            _userManager = userManager;     
+            _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _jwtTokenGenerator = jwtTokenGenerator;
         }
+
 
         public IActionResult Login(string returnUrl=null)
         {
@@ -28,6 +31,12 @@ namespace FidenzProjectMVC.Controllers
                 RedirectUrl = returnUrl,
             };
             return View(loginVM);
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
@@ -46,8 +55,18 @@ namespace FidenzProjectMVC.Controllers
                     {
                         // Retrieve user roles
                         var roles = await _userManager.GetRolesAsync(user);
+                        var role = roles.FirstOrDefault();
 
-                        // Redirect based on role
+                        // Generate JWT token
+                        var token = _jwtTokenGenerator.GenerateJwtToken(user.Email, role);
+
+                        // Save the token in a cookie
+                        HttpContext.Response.Cookies.Append("AuthToken", token, new CookieOptions
+                        {
+                            HttpOnly = true,
+                            Expires = DateTime.Now.AddMinutes(30) // Adjust the expiration as needed
+                        });
+
                         if (roles.Contains("Admin"))
                         {
                             return RedirectToAction("AdminDashboard", "Admin"); // Redirect to Admin view
@@ -59,12 +78,14 @@ namespace FidenzProjectMVC.Controllers
                     }
                     else
                     {
+                        // If the password is incorrect
                         ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                         return View(loginVM);
                     }
                 }
                 else
                 {
+                    // If the user is not in the system
                     ModelState.AddModelError(string.Empty, "User not found.");
                     return View(loginVM);
                 }

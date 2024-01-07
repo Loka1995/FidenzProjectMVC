@@ -1,12 +1,12 @@
 ﻿using FidenzProjectMVC.Common.Interfaces;
 using FidenzProjectMVC.Models;
 using FidenzProjectMVC.Models.Dto;
-using FidenzProjectMVC.Repository;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FidenzProjectMVC.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class APIController : ControllerBase
