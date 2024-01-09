@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FidenzProjectMVC.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class APIController : ControllerBase
@@ -61,7 +62,7 @@ namespace FidenzProjectMVC.Controllers
             }
             return NotFound();
         }
-        [Authorize(Roles = "Admin")]
+        
         [HttpGet("groupedbyzipcode")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
