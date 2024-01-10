@@ -23,10 +23,10 @@ namespace FidenzProjectMVC.Controllers
         }
 
 
-        public IActionResult Login(string returnUrl=null)
+        public IActionResult Login(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-            LoginVM loginVM = new ()
+            LoginVM loginVM = new()
             {
                 RedirectUrl = returnUrl,
             };
@@ -98,46 +98,5 @@ namespace FidenzProjectMVC.Controllers
             // Handle failed login
             return View(loginVM);
         }
-
-        /*[HttpPost]
-        public async Task<IActionResult> Login(LoginVM loginVM)
-        {
-            if (ModelState.IsValid)
-            {
-                var user = await _userManager.FindByEmailAsync(loginVM.Email);
-
-                if (user != null)
-                {
-                    // Attempt to sign in the user with the provided password
-                    var result = await _signInManager.PasswordSignInAsync(user.UserName, loginVM.Password, loginVM.RememberMe, lockoutOnFailure: false);
-
-                    if (result.Succeeded)
-                    {
-                        // Retrieve user roles
-                        var roles = await _userManager.GetRolesAsync(user);
-                        var role = roles.FirstOrDefault();
-
-                        // Generate JWT token
-                        var token = _jwtTokenGenerator.GenerateJwtToken(user.Email, role);
-
-                        // Return the token in the response
-                        return Ok(new { Token = token });
-                    }
-                    else
-                    {
-                        // If the password is incorrect
-                        return Unauthorized("Invalid login attempt.");
-                    }
-                }
-                else
-                {
-                    // If the user is not in the system
-                    return NotFound("User not found.");
-                }
-            }
-            // Handle failed login
-            return BadRequest(ModelState);
-        }*/
-
     }
 }

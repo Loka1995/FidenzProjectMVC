@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FidenzProjectMVC.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Policy = "RequireAdminRole")]
     public class AdminController : Controller
     {
         private readonly ApplicationDbContext _context;
