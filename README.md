@@ -18,16 +18,17 @@
 Admin user
   - Email : **admin@example.com**
   - Password : **AdminPassword123!**
+    
 User user
   - Email : **user@example.com**
   - Password : **UserPassword123!**
 
 #Using The Application
 
-1. To test the API go to `https://localhost:**<YourPort>**/Swagger/index.html`.
+1. To test the API go to `https://localhost:<YourPort>/Swagger/index.html`.
 2. Generate the token from /api/API/login using **Admin** credentials.
 3. Paste the token in **Authorize** provided by Swagger and API endpoints are now accessible.
    (**If you enter User credentials and the generated token from that will not give you access to the API endpoints**).
-4. Go to `https://localhost:**<YourPort>` to login through the view provided in order to view **AdminDashboard** and **UserDashboard**.
+4. Go to `https://localhost:<YourPort>` to login through the view provided in order to view **AdminDashboard** and **UserDashboard**.
 5. When you login through the view a token is generated and stored as a `cookie`.
 6. You can use the same token **step 3**.
